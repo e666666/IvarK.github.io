@@ -1,7 +1,7 @@
 function getGSAmount() {
 	if (isEmptiness) return new Decimal(0)
 	let galaxies = player.galaxies + player.replicanti.galaxies + player.dilation.freeGalaxies;
-	let y = 1.5 
+	let y = 1.5
 	if (player.challenges.includes("postcngmm_1")) {
 		y += Math.max(0, 0.05*(galaxies - 10)) + 0.005 * Math.pow(Math.max(0, galaxies-30) , 2) + 0.0005 * Math.pow(Math.max(0, galaxies-50) , 3)
 		y *= .08*player.challenges.length
@@ -94,6 +94,7 @@ function reduceDimCosts() {
 		let div=1
 		if (player.achievements.includes("r21")) div=10
 		if (player.galacticSacrifice.upgrades.includes(11)) div=galUpgrade11()
+		if (player.aarexModifications.newGame3MinusVersion>=3) div=div.div(10)
 		for (d=1;d<9;d++) {
 			var name = TIER_NAMES[d]
 			player[name+"Cost"] = player[name+"Cost"].div(div)
