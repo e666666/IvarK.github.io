@@ -3260,7 +3260,7 @@ var modFullNames = {
 var modSubNames = {
   ngpp: ["OFF", "ON", "NG+++", "NGUd", "NGUd+"],
   arrows: ["Linear (↑⁰)", "Exponential (↑)", "Tetrational (↑↑)"],
-  ngmm: ["OFF", "ON", "NG---"],
+  ngmm: ["OFF", "ON", "NG---", "NG-4"],
   rs: ["NONE", "Eternity", "Infinity"]
 }
 function toggle_mode(id) {
@@ -3272,7 +3272,6 @@ function toggle_mode(id) {
   // Convert bool to int
   subModId = modes[id]
   if (subModId<2) subModId = subModId|0
-  console.log(subModId)
   // Update displays
 	document.getElementById(id+"Btn").textContent=`${modFullNames[id]}: ${hasSubMod?modSubNames[id][subModId]:subModId?"ON":"OFF"}`
 	if (id=="ngpp"&&modes.ngpp) {
