@@ -601,6 +601,9 @@ function updateNewPlayer(reseted) {
         player.infchallengeTimes.push(600*60*24*31)
         player.overXGalaxiesTickspeedBoost=10
     }
+    if (modesChosen.ngmm>2) {
+        player.aarexModifications.newGame3MinusVersion = 3
+    }
     if (modesChosen.arrows) {
         player.aarexModifications.newGameExpVersion = 1
         for (u=1;u<5;u++) player.infinityUpgrades.push("skipReset"+(u>3?"Galaxy":u))
@@ -3161,7 +3164,8 @@ function changeSaveDesc(saveId, placement) {
 		if (temp.aarexModifications.newGameMinusVersion&&temp.meta&&temp.galacticSacrifice&&temp.masterystudies) message="NG+-+-+"+(temp.tickspeedBoosts==undefined?"":"-")+", "+(temp.aarexModifications.newGamePlusVersion?"":"No NG+ features, ")
 		else {
 			if (temp.aarexModifications.newGameMinusVersion) message+="NG-, "
-			if (temp.galacticSacrifice) message+="NG--"+(temp.tickspeedBoosts!=undefined?"-":"")+", "
+      if (temp.aarexModifications.newGame3MinusVersion >= 3) message+="NG-4, "
+			else if (temp.galacticSacrifice) message+="NG--"+(temp.tickspeedBoosts!=undefined?"-":"")+", "
 			if (temp.boughtDims) message+="Eternity Respecced, "
 			if (temp.aarexModifications.newGameExpVersion) message+="NG^, "
 			if (temp.exdilation!==undefined||temp.meta!==undefined) {
@@ -3246,7 +3250,7 @@ function changeSaveDesc(saveId, placement) {
 var modCaps = {
   ngpp: 4,
   arrows: 2,
-  ngmm: 2,
+  ngmm: 3,
   rs: 2
 }
 var modFullNames = {

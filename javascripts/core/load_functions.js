@@ -365,13 +365,13 @@ if (player.version < 5) {
           isOn: false
       }
   }
-  
+
   if (typeof(player.options.commas) !== "string") {
       if (player.options.commas) player.options.commas = "Commas"
       else player.options.commas = player.options.notation
   }
   if (player.shameLevel === undefined) player.shameLevel = 0;
-    
+
   if (player.aarexModifications === undefined) {
       player.aarexModifications = {
           breakInfinity: false
@@ -610,7 +610,7 @@ if (player.version < 5) {
       $.notify('Your NG- save has been updated due to few balancing issues.', 'info')
   }
   if (player.aarexModifications.newGamePlusVersion === undefined) if (player.eternities < 20 && ECTimesCompleted("eterc1") > 0) player.aarexModifications.newGamePlusVersion = 1
-  if (player.aarexModifications.newGamePlusPlusVersion === undefined && !player.masterystudies) { 
+  if (player.aarexModifications.newGamePlusPlusVersion === undefined && !player.masterystudies) {
       if (player.dilation.rebuyables[4] !== undefined) {
           var migratedUpgrades = []
           var v2_1check=player.version>13
@@ -1576,7 +1576,7 @@ if (player.version < 5) {
   else document.getElementById("chartOnOff").checked = false
   if (player.options.chart.dips) document.getElementById("chartDipsOnOff").checked = true
   else document.getElementById("chartDipsOnOff").checked = false
- 
+
   if (player.options.theme == "Dark" || player.options.theme == "Dark Metro") {
     Chart.defaults.global.defaultFontColor = '#888';
     normalDimChart.data.datasets[0].borderColor = '#888'
@@ -1616,7 +1616,7 @@ if (player.version < 5) {
 
   document.getElementById("secretstudy").style.opacity = 0
   document.getElementById("secretstudy").style.cursor = "pointer"
-  
+
   document.getElementById("bestAntimatterType").textContent = player.masterystudies && quantumed ? "Your best meta-antimatter for this quantum" : "Your best-ever meta-antimatter"
 
   document.getElementById("masterystudyunlock").style.display = player.dilation.upgrades.includes("ngpp6") && player.masterystudies ? "" : "none"
@@ -1898,7 +1898,8 @@ if (player.version < 5) {
       if (player.infinityUpgradesRespecced) ngModeMessages.push('Welcome to Infinity Respecced, created by Aarex! In this mode, all of infinity upgrades are replaced with new upgrades except 2x IP mult. Oh, break infinity is removed.')
       if (player.boughtDims) ngModeMessages.push('Welcome to Eternity Respecced created by dan-simon! You can check out why he made this at <a href="https://dan-simon.github.io/b/eternity-respecced/about/about_game.html" target="_newtab">the link</a>. NOTE: This is broken right now. I will fix it in later time, like after months.')
       if (player.galacticSacrifice) {
-          if (player.aarexModifications.newGame3MinusVersion) ngModeMessages.push('Welcome to NG--- mode, the nerfed version of NG-- mode! This mode reduces tickspeed multiplier multiplier and nerfs galaxies, but have a new feature called \"Tickspeed Boosts\" and 1 achievement buff.')
+          if (player.aarexModifications.newGame3MinusVersion >= 3) ngModeMessages.push('Welcome to NG-4 mode, the nerfed version of NG--- mode! This mode features even more changes from NG--- and is very hardcore. WIP by Nyan Cat')
+          else if (player.aarexModifications.newGame3MinusVersion) ngModeMessages.push('Welcome to NG--- mode, the nerfed version of NG-- mode! This mode reduces tickspeed multiplier multiplier and nerfs galaxies, but have a new feature called \"Tickspeed Boosts\" and 1 achievement buff.')
           else ngModeMessages.push('Welcome to NG-- mode created by Nyan cat! Dilation is always locked but have more balancing, IC3 trap, and a new feature called "Galactic Sacrifice".')
       }
       if (player.aarexModifications.newGameMinusVersion) ngModeMessages.push("Welcome to NG- mode! Everything are nerfed by the creator slabdrill, making the end-game harder to reach.")
@@ -2124,7 +2125,7 @@ function new_game(id) {
 	closeToolTip()
 	onLoad()
 	startInterval()
-	
+
 	$.notify("Save created", "info")
 	localStorage.setItem("AD_aarexModifications",btoa(JSON.stringify(metaSave)))
 	closeToolTip()
@@ -2184,7 +2185,7 @@ function transformSaveToDecimal() {
   player.costMultipliers = [new Decimal(player.costMultipliers[0]), new Decimal(player.costMultipliers[1]), new Decimal(player.costMultipliers[2]), new Decimal(player.costMultipliers[3]), new Decimal(player.costMultipliers[4]), new Decimal(player.costMultipliers[5]), new Decimal(player.costMultipliers[6]), new Decimal(player.costMultipliers[7])]
   player.tickspeedMultiplier = new Decimal(player.tickspeedMultiplier)
   player.matter = new Decimal(player.matter)
- 
+
   if (player.singularity != undefined) {
       player.singularity.sacrificed = new Decimal(player.singularity.sacrificed)
       player.singularity.singularityPower = new Decimal(player.singularity.singularityPower)
