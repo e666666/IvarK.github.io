@@ -23,7 +23,9 @@ var modes = {
     ngp: false,
     ngpp: false,
     ngmm: false,
-    ers: false
+    ers: false,
+    arrows: false,
+    rs: false
 }
 function updateNewPlayer(reseted) {
     if (reseted) {
@@ -1114,7 +1116,7 @@ function getGalaxyCostScalingStart(galaxies, scalingSpeed) {
     if (player.timestudy.studies.includes(223)) n += 7
     if (player.timestudy.studies.includes(224)) n += Math.floor(player.resets/2000)
     if (player.masterystudies !== undefined) if (player.quantum.bigRip.active && player.quantum.bigRip.upgrades.includes(15)) n += Math.sqrt(player.eternityPoints.add(1).log10()) * 3.55
-	
+
     if (galaxies > 1399 && !tmp.be) {
 		let push = 5
 		if (GUBought("rg5")) push *= 1.13
@@ -1772,7 +1774,7 @@ function updateChallenges() {
 		document.getElementById(player.challenges[i]).className = "completedchallengesbtn";
 		document.getElementById(player.challenges[i]).textContent = "Completed"
 	}
-	
+
 	var challengeRunning
 	if (player.currentChallenge === "") {
 		if (!player.challenges.includes("challenge1")) challengeRunning="challenge1"
@@ -1857,7 +1859,7 @@ function checkICID(name) {
 function updateEternityChallenges() {
 	var locked = true
 	for (ec=1;ec<15;ec++) {
-		var property = "eterc"+ec 
+		var property = "eterc"+ec
 		var ecdata = player.eternityChalls[property]
 		if (ecdata) locked = false
 		document.getElementById(property+"div").style.display=ecdata?"inline-block":"none"
@@ -2043,7 +2045,7 @@ function buyEternityUpgrade(name, cost) {
 }
 
 function getEPCost(bought) {
-	return Decimal.pow(bought>481?1e3:bought>153?500:bought>58?100:50, bought + Math.pow(Math.max(bought-1334, 0), 1.2)).times(500)	
+	return Decimal.pow(bought>481?1e3:bought>153?500:bought>58?100:50, bought + Math.pow(Math.max(bought-1334, 0), 1.2)).times(500)
 }
 
 function buyEPMult() {
@@ -2978,7 +2980,7 @@ function galaxyReset() {
         player.eightBought = 1;
         player.resets = 4;
     }
-	
+
     setInitialDimensionPower();
 
 
@@ -3241,11 +3243,38 @@ function changeSaveDesc(saveId, placement) {
 	element.innerHTML=message
 }
 
+var modCaps = {
+  ngpp: 4,
+  arrows: 2,
+  ngmm: 2,
+  rs: 2
+}
+var modFullNames = {
+  rs: "Respecced",
+  arrows: "NG↑",
+  ngpp: "NG++",
+  ngp: "NG+",
+  ngmm: "NG--",
+  ngm: "NG-"
+}
+var modSubNames = {
+  ngpp: ["OFF", "ON", "NG+++", "NGUd", "NGUd+"],
+  arrows: ["Linear (↑⁰)", "Exponential (↑)", "Tetrational (↑↑)"],
+  ngmm: ["OFF", "ON", "NG---"],
+  rs: ["NONE", "Eternity", "Infinity"]
+}
 function toggle_mode(id) {
-	if (id=="ngpp"&&modes[id]<4) modes[id]++
-	else if ((id=="arrows"||id=="ngmm"||id=="rs")&&modes[id]===true) modes[id]=2
-	else modes[id]=!modes[id]
-	document.getElementById(id+"Btn").textContent=(id=="rs"?"Respecced":id=="arrows"?"NG↑":id=="ngpp"?"NG++":id=="ngp"?"NG+":id=="ngmm"?"NG--":"NG-")+": "+(id=="arrows"?(modes[id]>1?"Tetrational (↑↑)":modes[id]?"Exponential (↑)":"Linear (↑⁰)"):id=="rs"?(modes.rs>1?"Infinity":modes.rs>0?"Eternity":"NONE"):modes[id]>1?"NG"+(id=="arrows"?"^^":id=="ngpp"?(modes[id]>3?"Ud+":modes[id]>2?"Ud":"+++"):"---"):modes[id]?"ON":"OFF")
+  hasSubMod = Object.keys(modCaps).includes(id)
+  // Change submod
+  if (!hasSubMod || modes[id]===0) modes[id]=!modes[id]
+  else if (modes[id] === true) modes[id] = 2
+  else modes[id] = (modes[id]+1) % (modCaps[id]+1)
+  // Convert bool to int
+  subModId = modes[id]
+  if (subModId<2) subModId = subModId|0
+  console.log(subModId)
+  // Update displays
+	document.getElementById(id+"Btn").textContent=`${modFullNames[id]}: ${hasSubMod?modSubNames[id][subModId]:subModId?"ON":"OFF"}`
 	if (id=="ngpp"&&modes.ngpp) {
 		if (!modes.ngp) toggle_mode("ngp")
 		modes.rs=0
@@ -3698,7 +3727,7 @@ function updateNotationOption() {
 	document.getElementById("notation").innerHTML = "<p style='font-size:15px'>Notations</p>"+notationMsg+"<br>"+commasMsg
 	document.getElementById("chosenNotation").textContent = player.options.notation=="AF5LN"?"Notation: Aarex's Funny 5-letter Notation":notationMsg
 	document.getElementById("chosenCommas").textContent = player.options.commas=="AF5LN"?"Aarex's Funny 5-letter Notation on exponents":commasMsg
-	
+
 	let tooltip=""
 	if (player.options.notation=="AAS") tooltip="Notation: Aarex's Abbreviation System"
 	if (player.options.notation=="AF5LN") tooltip="Notation: Aarex's Funny 5-letter Notation"
@@ -3768,12 +3797,12 @@ document.getElementById("notation").onclick = function () {
 		let commasTable=document.getElementById("commasOptions")
 		let subTable=document.getElementById("subNotationOptions")
 		let selectList=""
-		
+
 		var row=commasTable.insertRow(0)
 		row.innerHTML="<button class='storebtn' style='width:160px; height: 40px' onclick='switchCommas(0)'>Commas on exponents</button>"
 		row=commasTable.insertRow(1)
 		row.innerHTML="<button class='storebtn' style='width:160px; height: 40px' onclick='switchCommas(1)'>Same notation on exponents</button>"
-		
+
 		for (n=0;n<notationArray.length;n++) {
 			var name=notationArray[n]=="Emojis"?"Cancer":notationArray[n]
 			row=notationsTable.insertRow(n)
@@ -3785,7 +3814,7 @@ document.getElementById("notation").onclick = function () {
 				row.innerHTML="<button class='storebtn' id='selectSub"+name+"' style='width:160px; height: 40px' onclick='switchSubNotation("+n+")'>Select "+name+"</button>"
 			} else if (n<18) {
 				row=subTable.insertRow(n)
-				row.innerHTML="<button class='storebtn' style='width:160px; height: 40px' onclick='switchSubNotation("+n+")'>Select "+name+"</button>"	
+				row.innerHTML="<button class='storebtn' style='width:160px; height: 40px' onclick='switchSubNotation("+n+")'>Select "+name+"</button>"
 			}
 		}
 		document.getElementById("selectAAS").setAttribute("ach-tooltip","Select Aarex's Abbreviation System")
@@ -3803,7 +3832,7 @@ function openNotationOptions() {
 		document.getElementById("mainnotationoptions1").style.display="none"
 		document.getElementById("mainnotationoptions2").style.display="none"
 		document.getElementById("notationoptions").style.display=""
-		
+
 		document.getElementById("significantDigits").value=player.options.scientific.significantDigits?player.options.scientific.significantDigits:0
 		document.getElementById("logBase").value=player.options.logarithm.base
 		document.getElementById("tetrationBase").value=player.options.tetration.base
@@ -4055,14 +4084,14 @@ function updateAutobuyers() {
     autoBuyerDim7.tier = 7
     autoBuyerDim8.tier = 8
     autoBuyerTickSpeed.tier = 9
-	
+
     if (player.galacticSacrifice) {
         var autoGalSacrifice = new Autobuyer(14)
 
         autoGalSacrifice.interval = 15e3
         autoGalSacrifice.priority = 5
     }
-	
+
     if (player.tickspeedBoosts != undefined) {
         var autoTickspeedBoost = new Autobuyer(15)
 
@@ -5588,7 +5617,7 @@ function gainEternitiedStat() {
 }
 
 function gainBankedInf() {
-	let ret = 0 
+	let ret = 0
 	let numerator = player.infinitied
 	if (speedrunMilestonesReached > 27) numerator = nA(getInfinitiedGain(), player.infinitied)
 	let frac = 0.05
@@ -5813,7 +5842,7 @@ function startChallenge(name) {
     }
     updateSingularity()
     updateDimTechs()
-	
+
     if (player.replicanti.unl) player.replicanti.amount = new Decimal(1)
     player.replicanti.galaxies = 0
 
@@ -7183,7 +7212,7 @@ setInterval(function() {
             $.notify("You became a ghost in at most "+getFullExpansion(tmp.bm[notifyId2])+" quantumed stat! "+(["You now start with all Speedrun Milestones and all "+shorten(Number.MAX_VALUE)+" QK features unlocked, all Paired Challenges completed, all Big Rip upgrades bought, Nanofield is 2x faster until you reach 16 rewards, and you get quarks based on your best MA this quantum", "For now on, colored quarks do not cancel, you keep your gluon upgrades, and you can quick Big Rip", "You now keep your Electron upgrades", "For now on, Quantuming doesn't reset your Tachyon particles unless you are in a QC, unstabilizing quarks doesn't lose your colored quarks, and you start with 5 of 1st upgrades of each Branch", "For now on, Quantuming doesn't reset your Meta-Dimension Boosts unless you are in a QC or you are going to undo Big Rip", "For now on, Quantuming doesn't reset your normal replicants unless you are in a QC or you are going to undo Big Rip", "You now start with 10 worker replicants and Ghostifying now doesn't reset Neutrinos.", "You are now gaining ^0.5 amount of quarks, ^0.5 amount of gluons, and 1% of Space Shards you will gain per second.", "You now start with 10 of Second Emperor Dimensions", "You now start with 10 of Fourth Emperor Dimensions", "You now start with 10 of Sixth Emperor Dimensions", "You now start with 10 of Eighth Emperor Dimensions", "You now start with first 16 Nanofield rewards", "You now start with "+shortenCosts(1e25)+" quark spins", "You now start with Break Eternity unlocked and all Break Eternity upgrades bought", "You unlocked 'I rather oppose the theory of everything' achievement"])[notifyId2]+".","success")
             notifyId2++
         }
-        if (player.quantum.autoOptions.assignQK && player.ghostify.milestones > 7) assignAll() 
+        if (player.quantum.autoOptions.assignQK && player.ghostify.milestones > 7) assignAll()
     }
 }, 1000)
 
@@ -7223,7 +7252,7 @@ function updateEPminpeak(diff, type) {
     if (currentEPmin.gt(EPminpeak) && player.infinityPoints.gte(Number.MAX_VALUE)) {
         EPminpeak = currentEPmin
         if (player.masterystudies) player.peakSpent = 0
-    } else if (player.masterystudies && currentEPmin.gt(0)) {    	
+    } else if (player.masterystudies && currentEPmin.gt(0)) {
         player.peakSpent = diff + (player.peakSpent ? player.peakSpent : 0)
     }
     return currentEPmin;
@@ -8012,7 +8041,7 @@ function gameLoop(diff) {
 
     if (player.aarexModifications.progressBar) {
         document.getElementById("progressbar").className=""
-        if (document.getElementById("metadimensions").style.display == "block") doQuantumProgress() 
+        if (document.getElementById("metadimensions").style.display == "block") doQuantumProgress()
         else if (player.currentChallenge !== "") {
             var percentage = Math.min((Decimal.log10(player.money.plus(1)) / Decimal.log10(player.challengeTarget) * 100), 100).toFixed(2) + "%"
             document.getElementById("progressbar").style.width = percentage
@@ -8620,7 +8649,7 @@ function showDimTab(tabName) {
 
 function toggleProgressBar() {
 	player.aarexModifications.progressBar=!player.aarexModifications.progressBar
-	document.getElementById("progressBarBtn").textContent = (player.aarexModifications.progressBar?"Hide":"Show")+" progress bar"	
+	document.getElementById("progressBarBtn").textContent = (player.aarexModifications.progressBar?"Hide":"Show")+" progress bar"
 }
 
 function showChallengesTab(tabName) {
@@ -8879,7 +8908,7 @@ window.addEventListener('keydown', function(event) {
         case 69: // E, also, nice.
         document.getElementById("eternitybtn").onclick();
         break;
-	
+
         case 81: // Q, for quantum.
         if (player.meta) quantum(false,false,0)
         break;
