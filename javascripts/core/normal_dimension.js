@@ -76,7 +76,7 @@ function getDimensionFinalMultiplier(tier) {
   if (player.timestudy.studies.includes(193)) multiplier = multiplier.times(Decimal.pow(1.03, getEternitied()).min("1e13000"))
   if (tier == 8 && player.timestudy.studies.includes(214)) multiplier = multiplier.times((calcTotalSacrificeBoost().pow(8)).min("1e46000").times(calcTotalSacrificeBoost().pow(1.1).min(new Decimal("1e125000"))))
   if (tier == 8 && player.achievements.includes("ng3p27")) multiplier = multiplier.times(Decimal.pow(10,Math.pow(player.galaxies,Math.min(Math.sqrt(Math.log10(Math.max(player.galaxies,1)))*2,2.5))))
-	  
+
   if (player.galacticSacrifice) {
       if (player.galacticSacrifice.upgrades.includes(12)) multiplier = multiplier.times(galUpgrade12())
       if (player.galacticSacrifice.upgrades.includes(13) && player.currentChallenge != "challenge15" && player.currentChallenge != "postc1") multiplier = multiplier.times(galUpgrade13())
@@ -85,7 +85,11 @@ function getDimensionFinalMultiplier(tier) {
   }
 
   if (multiplier.lt(1)) multiplier = new Decimal(1)
-  if (player.dilation.active || player.galacticSacrifice) multiplier = Decimal.pow(10, Math.pow(multiplier.log10(), dilationPowerStrength()))
+  let NGM4Buff = player.aarexModifications.newGame3MinusVersion>=3 && multiplier.lte(10)
+  if ((player.dilation.active || player.galacticSacrifice) && !NGM4Buff) {
+    multiplier = Decimal.pow(10, Math.pow(multiplier.log10(), dilationPowerStrength()))
+    if (NGM4Buff && multiplier.lt(10)) multiplier = new Decimal(10)
+  }
 
   if (player.dilation.upgrades.includes(6)) multiplier = multiplier.times(player.dilation.dilatedTime.max(1).pow(308))
   if (useHigherNDReplMult) multiplier = multiplier.times(tmp.nrm)
@@ -151,18 +155,18 @@ function hasInfinityMult(tier) {
     function multiplySameCosts(cost) {
         var tiers = [ null, "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eight" ];
         var tierCosts = [ null, new Decimal(1e3), new Decimal(1e4), new Decimal(1e5), new Decimal(1e6), new Decimal(1e8), new Decimal(1e10), new Decimal(1e12), new Decimal(1e15) ];
-    
+
         for (let i = 1; i <= 8; ++i) {
             if (player[tiers[i] + "Cost"].e == cost.e) player[tiers[i] + "Cost"] = player[tiers[i] + "Cost"].times(tierCosts[i])
-    
+
         }
         if (player.tickSpeedCost.e == cost.e) player.tickSpeedCost = player.tickSpeedCost.times(player.tickspeedMultiplier)
         }
-    
-    
+
+
     function multiplyPC5Costs(cost, tier) {
         var tiers = [ null, "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eight" ];
-    
+
         if (tier < 5) {
             for (var i = 1; i<9; i++) {
                 if (player[tiers[i] + "Cost"].e <= cost.e) {
@@ -179,17 +183,17 @@ function hasInfinityMult(tier) {
             }
         }
     }
-    
-    
+
+
     function canBuyDimension(tier) {
         if (reachedInfinity()) return false;
         if (tier > player.resets + 4) return false;
         if (tier > 1 && player[TIER_NAMES[tier - 1] + 'Amount'] == 0 && getEternitied() < 30) return false;
         if ((player.currentChallenge == "challenge4" || player.currentChallenge == "postc1") && tier > 6) return false
-    
+
         return true;
     }
-    
+
     function getDimensionPowerMultiplier(nonrandom, focusOn) {
         if (((inQC(5)||inQC(7))&&focusOn!="linear")||(((player.currentChallenge=="challenge13"&&player.tickspeedBoosts==undefined)||player.currentChallenge=="postc1"||player.currentChallenge=="postcngm3_1")&&player.galacticSacrifice!=undefined)) {
             if (player.masterystudies) if (player.masterystudies.includes("t321")) return new Decimal("1e430")
@@ -200,7 +204,7 @@ function hasInfinityMult(tier) {
 
         if (player.infinityUpgrades.includes('dimMult')) dimMult *= infUpg12Pow()
         if ((player.currentChallenge == "challenge9" || player.currentChallenge == "postc1")&&!nonrandom) dimMult = Math.pow(10/0.30,Math.random())*0.30
-    
+
         if (player.achievements.includes("r58")) dimMult = player.galacticSacrifice?Math.pow(dimMult,1.0666):dimMult*1.01;
         dimMult += ECTimesCompleted("eterc3") * 0.8
         if (player.galacticSacrifice) if (player.galacticSacrifice.upgrades.includes(33) && player.currentChallenge != "challenge15" && player.currentChallenge != "postc1") dimMult *= galUpgrade33();
@@ -218,23 +222,23 @@ function hasInfinityMult(tier) {
         if (player.aarexModifications.newGameExpVersion) return 1.2
         return 1.1
     }
-    
+
     function clearDimensions(amount) {
         var tiers = [ null, "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eight" ];
-    
+
         for (i = 1; i <= amount; i++) {
             player[tiers[i] + "Amount"] = new Decimal(0)
         }
     }
-    
-    
+
+
     function getDimensionCostMultiplier(tier) {
-    
+
         var multiplier2 = [new Decimal(1e3),new Decimal(5e3),new Decimal(1e4),new Decimal(1.2e4),new Decimal(1.8e4),new Decimal(2.6e4),new Decimal(3.2e4),new Decimal(4.2e4)];
         if (player.currentChallenge == "challenge10") return multiplier2[tier - 1];
         else return player.costMultipliers[tier - 1];
     }
-    
+
     function onBuyDimension(tier) {
         if (!player.break) {
             switch (tier) {
@@ -248,11 +252,11 @@ function hasInfinityMult(tier) {
                 case 8: giveAchievement("90 degrees to infinity"); break;
             }
         }
-    
+
         if (player.eightAmount.round().eq(99)) {
             giveAchievement("The 9th Dimension is a lie");
         }
-    
+
 	    if (player.currentChallenge == "challenge2" || player.currentChallenge == "postc1") player.chall2Pow = 0
 	    if (player.currentChallenge == "challenge8" || player.currentChallenge == "postc1") clearDimensions(tier-1)
 	    if ((player.currentChallenge == "challenge12" || player.currentChallenge == "postc1" || player.currentChallenge == "postc6" || inQC(6)) && player.matter.equals(0)) player.matter = new Decimal(1)
@@ -262,7 +266,7 @@ function hasInfinityMult(tier) {
         if (tier != 1) player.dead = false
         if (player.masterystudies) if (tier > 4) player.old = false
     }
-    
+
 	function getAmount(tier) {
 		let ret = player[TIER_NAMES[tier]+"Amount"].toNumber()
 		if (!break_infinity_js) ret = Math.round(ret)
@@ -524,7 +528,8 @@ function getDimensionProductionPerSecond(tier) {
 		var maximum = player.galacticSacrifice ? 3 : 0
 		tick = Decimal.pow(10, Math.pow(Math.abs(maximum-tick.log10()), dilationPowerStrength()))
 		if (player.masterystudies != undefined) tick = tick.pow(getNanofieldRewardEffect(5))
-		return ret.times(Decimal.pow(10,(player.aarexModifications.newGame3MinusVersion?2:3)-maximum)).times(tick);
+    power = player.aarexModifications.newGame3MinusVersion>=3?0:player.aarexModifications.newGame3MinusVersion?2:3
+		return ret.times(Decimal.pow(10,power-maximum)).times(tick);
 	}
 	return ret.div(tick.div(1e3));
 }

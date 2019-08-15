@@ -51,7 +51,7 @@ function getTimeDimensionPower(tier) {
 
   if (inQC(6)) ret = ret.times(player.postC8Mult).dividedBy(player.matter.max(1))
   if (ret.lt(0)) ret = new Decimal(0)
-
+  if (player.aarexModifications.newGame3MinusVersion>=3) ret = ret.div(100)
   if (player.dilation.active || player.galacticSacrifice) ret = Decimal.pow(10, Math.pow(ret.max(1).log10(), dilationPowerStrength()))
 
 

@@ -38,7 +38,7 @@ function updateNewPlayer(reseted) {
         }
     } else var modesChosen = modes
     player = {
-        money: new Decimal(modesChosen.ngp>1?20:10),
+        money: new Decimal(modesChosen.ngmm>=3?200:modesChosen.ngp>1?20:10),
         tickSpeedCost: new Decimal(1000),
         tickspeed: new Decimal(modesChosen.ngp>1?500:1000),
         firstCost: new Decimal(10),

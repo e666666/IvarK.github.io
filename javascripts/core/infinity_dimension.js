@@ -43,6 +43,7 @@ function DimensionProduction(tier) {
   if (player.currentEternityChall == "eterc11") return ret
   if (player.currentEternityChall == "eterc7") ret = ret.dividedBy(player.tickspeed.dividedBy(1000))
   ret = ret.times(DimensionPower(tier))
+  if (player.aarexModifications.newGame3MinusVersion>=3) ret = ret.div(100)
   if (player.challenges.includes("postc6")&&!inQC(3)) {
       let tick = new Decimal(player.tickspeed)
       if (player.dilation.active || player.galacticSacrifice) tick = Decimal.pow(10, Math.pow(Math.abs(tick.log10()), dilationPowerStrength()))
