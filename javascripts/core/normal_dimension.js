@@ -301,6 +301,7 @@ function buyOneDimension(tier) {
 	if (!canBuyDimension(tier)) return false
 	let name = TIER_NAMES[tier]
 	let cost = player[name + 'Cost']
+  if (player.aarexModifications.newGame3MinusVersion>=3) cost = Decimal.power(cost,1.25)
 	let resource = getOrSubResource(tier)
 	if (!cost.lte(resource)) return false
 	getOrSubResource(tier, cost)
@@ -323,7 +324,9 @@ function buyManyDimension(tier, quick) {
 	if (!canBuyDimension(tier)) return false
 	let name = TIER_NAMES[tier]
 	let toBuy = 10 - dimBought(tier)
-	let cost = player[name + 'Cost'].times(toBuy)
+	let cost = player[name + 'Cost']
+  if (player.aarexModifications.newGame3MinusVersion>=3) cost = Decimal.power(cost,1.25)
+  cost = cost.times(toBuy)
 	let resource = getOrSubResource(tier)
 	if (!cost.lte(resource)) return false
 	getOrSubResource(tier, cost)

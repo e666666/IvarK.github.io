@@ -1737,6 +1737,7 @@ function updateCosts() {
 		if (document.getElementById("antimatterdimensions").style.display == "block") {
 			var name = TIER_NAMES[i]
 			var cost = player[name + "Cost"]
+      if (player.aarexModifications.newGame3MinusVersion>=3) cost = Decimal.power(cost,1.25)
 			var resource = getOrSubResource(i)
             document.getElementById(name).className = cost.lte(resource) ? 'storebtn' : 'unavailablebtn'
 			document.getElementById(name).textContent = 'Cost: ' + shortenPreInfCosts(cost)
