@@ -94,7 +94,7 @@ function reduceDimCosts() {
 		let div=1
 		if (player.achievements.includes("r21")) div=10
 		if (player.galacticSacrifice.upgrades.includes(11)) div=galUpgrade11()
-		if (player.aarexModifications.newGame3MinusVersion>=3) div=div.div(10)
+		if (player.aarexModifications.newGame4MinusVersion) div=div.div(10)
 		for (d=1;d<9;d++) {
 			var name = TIER_NAMES[d]
 			player[name+"Cost"] = player[name+"Cost"].div(div)

@@ -602,7 +602,7 @@ function updateNewPlayer(reseted) {
         player.overXGalaxiesTickspeedBoost=10
     }
     if (modesChosen.ngmm>2) {
-        player.aarexModifications.newGame3MinusVersion = 3
+        player.aarexModifications.newGame4MinusVersion = 1
     }
     if (modesChosen.arrows) {
         player.aarexModifications.newGameExpVersion = 1

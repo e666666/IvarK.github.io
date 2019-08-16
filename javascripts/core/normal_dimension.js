@@ -85,7 +85,7 @@ function getDimensionFinalMultiplier(tier) {
   }
 
   if (multiplier.lt(1)) multiplier = new Decimal(1)
-  let NGM4Buff = player.aarexModifications.newGame3MinusVersion>=3 && multiplier.lte(10)
+  let NGM4Buff = player.aarexModifications.newGame4MinusVersion && multiplier.lte(10)
   if ((player.dilation.active || player.galacticSacrifice) && !NGM4Buff) {
     multiplier = Decimal.pow(10, Math.pow(multiplier.log10(), dilationPowerStrength()))
     if (NGM4Buff && multiplier.lt(10)) multiplier = new Decimal(10)
@@ -528,7 +528,7 @@ function getDimensionProductionPerSecond(tier) {
 		var maximum = player.galacticSacrifice ? 3 : 0
 		tick = Decimal.pow(10, Math.pow(Math.abs(maximum-tick.log10()), dilationPowerStrength()))
 		if (player.masterystudies != undefined) tick = tick.pow(getNanofieldRewardEffect(5))
-    power = player.aarexModifications.newGame3MinusVersion>=3?0:player.aarexModifications.newGame3MinusVersion?2:3
+    power = player.aarexModifications.newGame4MinusVersion?0:player.aarexModifications.newGame3MinusVersion?2:3
 		return ret.times(Decimal.pow(10,power-maximum)).times(tick);
 	}
 	return ret.div(tick.div(1e3));
