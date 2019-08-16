@@ -1737,6 +1737,7 @@ function updateCosts() {
 		if (document.getElementById("antimatterdimensions").style.display == "block") {
 			var name = TIER_NAMES[i]
 			var cost = player[name + "Cost"]
+      if (player.aarexModifications.newGame4MinusVersion) cost = Decimal.pow(cost,1.25)
 			var resource = getOrSubResource(i)
             document.getElementById(name).className = cost.lte(resource) ? 'storebtn' : 'unavailablebtn'
 			document.getElementById(name).textContent = 'Cost: ' + shortenPreInfCosts(cost)
@@ -3164,7 +3165,7 @@ function changeSaveDesc(saveId, placement) {
 		if (temp.aarexModifications.newGameMinusVersion&&temp.meta&&temp.galacticSacrifice&&temp.masterystudies) message="NG+-+-+"+(temp.tickspeedBoosts==undefined?"":"-")+", "+(temp.aarexModifications.newGamePlusVersion?"":"No NG+ features, ")
 		else {
 			if (temp.aarexModifications.newGameMinusVersion) message+="NG-, "
-      if (temp.aarexModifications.newGame3MinusVersion >= 3) message+="NG-4, "
+      if (temp.aarexModifications.newGame4MinusVersion) message+="NG-4, "
 			else if (temp.galacticSacrifice) message+="NG--"+(temp.tickspeedBoosts!=undefined?"-":"")+", "
 			if (temp.boughtDims) message+="Eternity Respecced, "
 			if (temp.aarexModifications.newGameExpVersion) message+="NG^, "

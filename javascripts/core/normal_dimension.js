@@ -301,6 +301,7 @@ function buyOneDimension(tier) {
 	if (!canBuyDimension(tier)) return false
 	let name = TIER_NAMES[tier]
 	let cost = player[name + 'Cost']
+  if (player.aarexModifications.newGame4MinusVersion) cost = Decimal.pow(cost,1.25)
 	let resource = getOrSubResource(tier)
 	if (!cost.lte(resource)) return false
 	getOrSubResource(tier, cost)
@@ -323,7 +324,9 @@ function buyManyDimension(tier, quick) {
 	if (!canBuyDimension(tier)) return false
 	let name = TIER_NAMES[tier]
 	let toBuy = 10 - dimBought(tier)
-	let cost = player[name + 'Cost'].times(toBuy)
+	let cost = player[name + 'Cost']
+  if (player.aarexModifications.newGame4MinusVersion) cost = Decimal.pow(cost,1.25)
+  cost = cost.times(toBuy)
 	let resource = getOrSubResource(tier)
 	if (!cost.lte(resource)) return false
 	getOrSubResource(tier, cost)
@@ -351,15 +354,21 @@ function buyBulkDimension(tier, bulk, auto) {
 		bought++
 	}
 	let name = TIER_NAMES[tier]
-	let cost = player[name + 'Cost'].times(10)
+	let cost = player[name + 'Cost']
+  if (player.aarexModifications.newGame4MinusVersion) cost = Decimal.pow(cost,1.25)
+  cost = cost.times(10)
 	let resource = getOrSubResource(tier)
 	if (!cost.lte(resource)) return
+  cost = player[name + 'Cost'].times(10) // Restore price for math
 	if (player.currentChallenge != "postc5" && player.currentChallenge != "challenge5" && player.currentChallenge != "challenge9" && !costIncreaseActive(player[name + "Cost"])) {
 		let mult = getDimensionCostMultiplier(tier)
 		let max = Number.POSITIVE_INFINITY
 		if (player.currentChallenge != "challenge10" && player.currentChallenge != "postc1" && player.infinityUpgradesRespecced == undefined) max = Math.ceil(Decimal.div(Number.MAX_VALUE, cost).log(mult))
 		var toBuy = Math.min(Math.min(Math.floor(resource.div(cost).times(mult-1).add(1).log(mult)), bulk-bought), max)
-		getOrSubResource(tier, Decimal.pow(mult, toBuy).sub(1).div(mult-1).times(cost))
+    if (player.aarexModifications.newGame4MinusVersion) toBuy = Math.floor(toBuy*0.8)
+    let finalCost = Decimal.pow(mult, toBuy).sub(1).div(mult-1).times(cost)
+    if (player.aarexModifications.newGame4MinusVersion) finalCost = Decimal.pow(finalCost.div(10),1.25).times(10)
+    getOrSubResource(tier, finalCost)
 		player[name + "Amount"] = player[name + "Amount"].add(toBuy*10)
 		recordBought(name, toBuy*10)
 		player[name + "Pow"] = player[name + "Pow"].times(Decimal.pow(getDimensionPowerMultiplier(tier), toBuy))
@@ -367,7 +376,8 @@ function buyBulkDimension(tier, bulk, auto) {
 		if (costIncreaseActive(player[name + "Cost"])) player.costMultipliers[tier-1] = player.costMultipliers[tier-1].times(getDimensionCostMultiplierIncrease())
 		bought += toBuy
 	}
-	let stopped = false
+  if (!player.aarexModifications.newGame4MinusVersion) {
+  let stopped = false
 	let failsafe = 0
 	while (!canQuickBuyDim(tier)) {
 		stopped = true
@@ -401,6 +411,7 @@ function buyBulkDimension(tier, bulk, auto) {
 		player.costMultipliers[tier-1] = newMult.times(mi)
 		bought += toBuy
 	}
+  }
 	if (!auto) floatText(name+"D", "x" + shortenMoney(Decimal.pow(getDimensionPowerMultiplier(tier), bought)))
 	onBuyDimension(tier)
 }
