@@ -79,6 +79,7 @@ function pSac(chall) {
 }
 
 function pSacReset(force, chall, pxGain) {
+	if (!pSacrificed()) document.getElementById("quickMReset").style.display = ""
 	if (!chall) {
 		player.pSac.px = player.pSac.px.add(force?pxGain:getPxGain()).round()
 		player.pSac.times++
